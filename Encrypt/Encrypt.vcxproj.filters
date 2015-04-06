@@ -27,12 +27,18 @@
     <ClInclude Include="..\des.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\safe_server.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\des.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\safe_server.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
