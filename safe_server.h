@@ -9,8 +9,9 @@ class CSafeServer
 public:		
 	typedef unsigned char uchar;
 	static CSafeServer* instance();
-	bool createKeyInf(uchar *keyInf, int keyInfLen);
-	bool encode(uchar *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst);
+	bool createKeyInf(char *keyInf, int keyInfLen);
+	bool encode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst, int &dstLen);
+	bool decode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst);
 private:
 	CSafeServer();
 	bool getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey);

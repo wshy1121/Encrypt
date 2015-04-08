@@ -44,20 +44,47 @@ CSafeServer::CSafeServer()
 
 
 //主密钥索引(16字节)+密钥索引映射表(256字节)+实际密钥索引(16字节)
-bool CSafeServer::encode(uchar *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst)
+bool CSafeServer::encode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst, int &dstLen)
 {
+	int tmpDstLen = (srcLen + 7) / 8 * 8;
+	if (dstLen < tmpDstLen || keyInfLen != KEY_INF_LEN)
+	{
+		return false;
+	}
+	dstLen = tmpDstLen;
+	
 	bool bRet = true;
 	uchar realKey[SAFE_KEY_LEN];
-	bRet = getRealKey(keyInf, keyInfLen, realKey);
+	bRet = getRealKey((uchar *)keyInf, keyInfLen, realKey);
 	if (!bRet)
 	{
 		return false;
 	}
-	
+
+	Encode(TR_DES, (uchar *)pSrc, srcLen, (uchar *)pDst, &dstLen, realKey);
 	return true;
 }
 
-bool CSafeServer::createKeyInf(uchar *keyInf, int keyInfLen)
+bool CSafeServer::decode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst)
+{
+	if (keyInfLen != KEY_INF_LEN)
+	{
+		return false;
+	}
+
+	bool bRet = true;
+	uchar realKey[SAFE_KEY_LEN];
+	bRet = getRealKey((uchar *)keyInf, keyInfLen, realKey);
+	if (!bRet)
+	{
+		return false;
+	}
+
+	Decode(TR_DES, (uchar *)pSrc, srcLen, (uchar *)pDst, realKey);
+	return true;
+}
+
+bool CSafeServer::createKeyInf(char *keyInf, int keyInfLen)
 {
 	if (keyInfLen != KEY_INF_LEN)
 	{
@@ -112,7 +139,7 @@ bool CSafeServer::getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey)
 	
 	//获取实际密钥
 	uchar *realKeyIndexs = realKeyInf + pos;
-	uchar realKey[keyLen];
+	uchar *realKey = realKeyInf + pos;
 	Decode(TR_DES, realKeyIndexs, keyLen, realKeyIndexs, mainKey);
 	for (int i=0; i<keyLen; ++i)
 	{
