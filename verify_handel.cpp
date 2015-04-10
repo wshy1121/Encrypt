@@ -9,12 +9,12 @@ extern CPthreadMutex g_insMutexCalc;
 
 CVerifyHandle::CVerifyHandle()
 {
-	addMethod("verify", (IDealDataHandle::Method)&CVerifyHandle::verify);
+	addMethod("login", (IDealDataHandle::Method)&CVerifyHandle::login);
 }
 
 
 
-void CVerifyHandle::verify(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
+void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
 	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
 
@@ -78,7 +78,7 @@ CVerifyClient::CVerifyClient()
 }
 
 
-bool CVerifyClient::verify(char *userName, char *passWord)
+bool CVerifyClient::login(char *userName, char *passWord)
 {
 	char sessionId[16];
 	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
@@ -96,7 +96,7 @@ bool CVerifyClient::verify(char *userName, char *passWord)
 
 	CLogDataInf dataInf;
 
-	dataInf.putInf((char *)"verify");
+	dataInf.putInf((char *)"login");
 	dataInf.putInf(sessionId);//session id(大于0)
 	dataInf.putInf(keyInf, sizeof(keyInf));//密钥
 	dataInf.putInf(_userName, _userNameLen);//用户名

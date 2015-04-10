@@ -8,7 +8,7 @@ class CVerifyHandle : public IDealDataHandle
 public:
 	CVerifyHandle();
 public:
-	void verify(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
+	void login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 };
 
 class CVerifyClient
@@ -16,7 +16,7 @@ class CVerifyClient
 public:
 	static CVerifyClient *instance();
 public:
-	bool verify(char *userName, char *passWord);
+	bool login(char *userName, char *passWord);
 private:
 	CVerifyClient();
 private:
