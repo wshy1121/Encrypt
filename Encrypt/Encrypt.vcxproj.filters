@@ -30,6 +30,9 @@
     <ClInclude Include="..\safe_server.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\verify_handel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +42,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\safe_server.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\verify_handel.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
