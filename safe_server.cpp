@@ -98,10 +98,25 @@ bool CSafeServer::createKeyInf(char *keyInf, int keyInfLen)
 	}
 	for (int i=0; i<keyInfLen; ++i)
 	{
-		keyInf[i] = rand() % 256;
+		keyInf[i] = rand() % KEY_MAP_SIZE;
 	}
 	return true;
 }
+
+bool CSafeServer::getAccessKeyInf(char *keyInf, int keyInfLen)
+{
+	if (keyInfLen != KEY_INF_LEN)
+	{
+		return false;
+	}
+	memset(keyInf, '0x11', keyInfLen);
+	for (int i=0; i<KEY_MAP_SIZE; ++i)
+	{
+		keyInf[i] = m_keyMap[i];
+	}
+	return true;
+}
+
 bool CSafeServer::getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey)
 {
 	const int keyLen = SAFE_KEY_LEN;
@@ -163,21 +178,30 @@ bool CSafeServer::getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey)
 
 bool CSafeServer::createAccess(char *access, int &accessLen)
 {
-	char keyInf[KEY_INF_LEN];
-	createKeyInf(keyInf, sizeof(keyInf));
-	char pAccess[] = "hy880110";
-	CSafeServer::instance()->encode(keyInf, sizeof(keyInf), pAccess, strlen(pAccess), access, accessLen);
-
+	if (accessLen < 8)
+	{
+		return false;
+	}
+	accessLen = 8;
 	for (int i=0; i<accessLen; ++i)
 	{
-		access[i] = m_accessMap[(uchar)access[i]];
+		access[i] = m_accessMap[(uchar)(rand() % KEY_MAP_SIZE)];
 	}
 	access[accessLen] = '\0';
 	return true;
 }
 
-bool CSafeServer::getAccessRep(char *accessRep, int &accessRepLen)
+bool CSafeServer::createAccessRep(char *access, int accessLen, char *accessRep)
 {
+	char keyInf[KEY_INF_LEN];
+	getAccessKeyInf(keyInf, sizeof(keyInf));
+	CSafeServer::instance()->decode(keyInf, sizeof(keyInf), access, accessLen, accessRep);
+
+	for (int i=0; i<accessLen; ++i)
+	{
+		accessRep[i] = m_accessMap[(uchar)accessRep[i]];
+	}
+	accessRep[accessLen] = '\0';
 	return true;
 }
 
