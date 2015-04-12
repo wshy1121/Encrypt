@@ -140,3 +140,9 @@ bool CVerifyClient::login(char *userName, char *passWord)
 
 
 
+bool CVerifyClient::getAccess(char *access, int &accessLen)
+{
+	return CSafeServer::instance()->createAccess(access, accessLen);
+}
+
+

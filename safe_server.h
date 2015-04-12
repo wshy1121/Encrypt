@@ -12,6 +12,8 @@ public:
 	bool createKeyInf(char *keyInf, int keyInfLen);
 	bool encode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst, int &dstLen);
 	bool decode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst);
+	bool createAccess(char *access, int &accessLen);
+	bool getAccessRep(char *accessRep, int &accessRepLen);
 private:
 	CSafeServer();
 	bool getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey);
@@ -20,6 +22,7 @@ private:
 private:
 	uchar m_mainKey[SAFE_KEY_LEN];
 	uchar m_keyMap[KEY_MAP_SIZE];
+	uchar m_accessMap[KEY_MAP_SIZE];
 };
 #endif
 

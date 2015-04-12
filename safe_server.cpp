@@ -40,6 +40,12 @@ CSafeServer::CSafeServer()
 		Encode(TR_DES, key, keyLen, key, &keyLen, m_mainKey);
 		i+= keyLen;
 	}
+
+	char keyArray[] = "0123456789";
+	for (int i=0; i<KEY_MAP_SIZE; ++i)
+	{
+		m_accessMap[i] = keyArray[m_keyMap[i] % 10];
+	}
 }
 
 
@@ -152,6 +158,26 @@ bool CSafeServer::getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey)
 	pos += keyLen;
 
 	memcpy(pKey, realKey, keyLen);
+	return true;
+}
+
+bool CSafeServer::createAccess(char *access, int &accessLen)
+{
+	char keyInf[KEY_INF_LEN];
+	createKeyInf(keyInf, sizeof(keyInf));
+	char pAccess[] = "hy880110";
+	CSafeServer::instance()->encode(keyInf, sizeof(keyInf), pAccess, strlen(pAccess), access, accessLen);
+
+	for (int i=0; i<accessLen; ++i)
+	{
+		access[i] = m_accessMap[(uchar)access[i]];
+	}
+	access[accessLen] = '\0';
+	return true;
+}
+
+bool CSafeServer::getAccessRep(char *accessRep, int &accessRepLen)
+{
 	return true;
 }
 

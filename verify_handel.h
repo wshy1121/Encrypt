@@ -17,6 +17,7 @@ public:
 	static CVerifyClient *instance();
 public:
 	bool login(char *userName, char *passWord);
+	bool getAccess(char *access, int &accessLen);
 private:
 	CVerifyClient();
 private:
