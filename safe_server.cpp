@@ -41,10 +41,10 @@ CSafeServer::CSafeServer()
 		i+= keyLen;
 	}
 
-	char keyArray[] = "0123456789";
+	char keyArray[] = "qwertyuiopasdfghjklzxcvbnm";
 	for (int i=0; i<KEY_MAP_SIZE; ++i)
 	{
-		m_accessMap[i] = keyArray[m_keyMap[i] % 10];
+		m_accessMap[i] = keyArray[m_keyMap[i] % 26];
 	}
 }
 
@@ -205,4 +205,19 @@ bool CSafeServer::createAccessRep(char *access, int accessLen, char *accessRep)
 	return true;
 }
 
+bool CSafeServer::verifyAccess(char *access, int accessLen, char *accessRep)
+{
+	char tmpAccessRep[32];
+	bool bRet = createAccessRep(access, accessLen, tmpAccessRep);
+	if (!bRet)
+	{
+		return false;
+	}
+
+	if (memcmp(tmpAccessRep, accessRep, accessLen))
+	{
+		return false;
+	}
+	return true;
+}
 

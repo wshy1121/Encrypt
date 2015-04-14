@@ -9,6 +9,7 @@ public:
 	CVerifyHandle();
 public:
 	void login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
+	void accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 };
 
 class CVerifyClient
@@ -19,6 +20,7 @@ public:
 	bool login(char *userName, char *passWord);
 	bool createAccess(char *access, int &accessLen);	
 	bool getAccessRep(char *access, int accessLen, char *accessRep);
+	bool verifyAccess(char *access, int accessLen, char *accessRep);
 private:
 	CVerifyClient();
 private:

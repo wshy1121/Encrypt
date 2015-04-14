@@ -14,6 +14,7 @@ public:
 	bool decode(char *keyInf, int keyInfLen, char *pSrc, int srcLen, char *pDst);
 	bool createAccess(char *access, int &accessLen);
 	bool createAccessRep(char *access, int accessLen, char *accessRep);	
+	bool verifyAccess(char *access, int accessLen, char *accessRep);
 private:
 	CSafeServer();
 	bool getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey);

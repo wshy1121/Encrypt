@@ -10,6 +10,7 @@ extern CPthreadMutex g_insMutexCalc;
 CVerifyHandle::CVerifyHandle()
 {
 	addMethod("login", (IDealDataHandle::Method)&CVerifyHandle::login);
+	addMethod("accessRep", (IDealDataHandle::Method)&CVerifyHandle::accessRep);
 }
 
 
@@ -59,6 +60,30 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	}
 }
 
+void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
+{
+	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	char *oper = dataInf.m_infs[0];
+	char *sessionId = dataInf.m_infs[1];
+
+	char *access = dataInf.m_infs[2];	
+	int accessLen = dataInf.m_infLens[2];
+	char accessRep[32];
+
+	bool bRet = CSafeServer::instance()->createAccessRep(access, accessLen, accessRep);
+	if (!bRet)
+	{
+		return ;
+	}
+	{
+		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		dataInf.putInf(oper);
+		dataInf.putInf(sessionId);//session id(大于0)
+		dataInf.putInf(accessRep, accessLen);//accessRep
+		dataInf.packet();
+	}
+}
+
 CVerifyClient *CVerifyClient::_instance;
 
 CVerifyClient *CVerifyClient::instance()
@@ -95,7 +120,6 @@ bool CVerifyClient::login(char *userName, char *passWord)
 	CSafeServer::instance()->encode(keyInf, sizeof(keyInf), passWord, strlen(passWord)+1, _passWord, _passWordLen);
 
 	CLogDataInf dataInf;
-
 	dataInf.putInf((char *)"login");
 	dataInf.putInf(sessionId);//session id(大于0)
 	dataInf.putInf(keyInf, sizeof(keyInf));//密钥
@@ -147,6 +171,26 @@ bool CVerifyClient::createAccess(char *access, int &accessLen)
 
 bool CVerifyClient::getAccessRep(char *access, int accessLen, char *accessRep)
 {
+	char sessionId[16];
+	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+
+	CLogDataInf dataInf;
+	dataInf.putInf((char *)"accessRep");
+	dataInf.putInf(sessionId);//session id(大于0)
+	dataInf.putInf(access, accessLen);//access
+
+	char *packet = NULL;
+	int packetLen = dataInf.packet(packet);
+	CNetClient::instance()->send(packet, packetLen);
+	CNetClient::instance()->receiveInfData(&dataInf);
+	
+	memcpy(accessRep, dataInf.m_infs[2], accessLen);
+	accessRep[accessLen] = '\0';
 	return true;
+}
+
+bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
+{
+	return CSafeServer::instance()->verifyAccess(access, accessLen, accessRep);
 }
 
