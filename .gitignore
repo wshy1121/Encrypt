@@ -21,3 +21,5 @@ Debug
 
 *.opensdf
 /*.SearchResults
+
+/Encrypt/Release
