@@ -15,6 +15,14 @@ CVerifyHandle::CVerifyHandle()
 }
 
 
+bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
+{	trace_worker();
+	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
+	bool bRet = CUserManager::instance()->isLogined(traceInfoId);
+
+	trace_printf("bRet  %d", bRet);
+	return bRet;
+}
 
 void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
@@ -64,7 +72,12 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 }
 
 void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
-{
+{	trace_worker();
+
+	if (!isAvailable(pCalcInf))
+	{	trace_printf("NULL");
+		return ;
+	}
 	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
 	char *oper = dataInf.m_infs[0];
 	char *sessionId = dataInf.m_infs[1];
@@ -75,16 +88,17 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 
 	bool bRet = CSafeServer::instance()->createAccessRep(access, accessLen, accessRep);
 	if (!bRet)
-	{
+	{	trace_printf("NULL");
 		return ;
 	}
-	{
+	{	trace_printf("NULL");
 		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
 		dataInf.putInf(oper);
 		dataInf.putInf(sessionId);//session id(´óÓÚ0)
 		dataInf.putInf(accessRep, accessLen);//accessRep
 		dataInf.packet();
 	}
+	trace_printf("NULL");	
 }
 
 CVerifyClient *CVerifyClient::_instance;
@@ -193,7 +207,7 @@ bool CVerifyClient::getAccessRep(char *access, int accessLen, char *accessRep)
 }
 
 bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
-{
+{	trace_worker();
 	return CSafeServer::instance()->verifyAccess(access, accessLen, accessRep);
 }
 

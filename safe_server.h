@@ -15,10 +15,13 @@ public:
 	bool createAccess(char *access, int &accessLen);
 	bool createAccessRep(char *access, int accessLen, char *accessRep);	
 	bool verifyAccess(char *access, int accessLen, char *accessRep);
+	int encryptMac(unsigned char *src, int vnLen, unsigned char *mac);
 private:
 	CSafeServer();
 	bool getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey);
-	bool getAccessKeyInf(char *keyInf, int keyInfLen);	
+	bool getAccessKeyInf(char *keyInf, int keyInfLen);
+	int termXorMac(char *pData, int nLen, char *pMac, int * pnMacLen);
+	char createAccMac(char *access, int accessLen);
 private:	
 	static  CSafeServer* _instance;
 private:

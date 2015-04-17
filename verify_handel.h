@@ -10,6 +10,8 @@ public:
 public:
 	void login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 	void accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
+private:
+	bool isAvailable(TimeCalcInf *pCalcInf);
 };
 
 class CVerifyClient

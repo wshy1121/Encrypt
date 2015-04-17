@@ -5,6 +5,7 @@
 #include "des.h"
 #include "link_tool.h"
 #include "safe_server.h"
+#include "defs.h"
 using namespace base;
 
 extern CPthreadMutex g_insMutexCalc;
@@ -182,17 +183,21 @@ bool CSafeServer::createAccess(char *access, int &accessLen)
 	{
 		return false;
 	}
+	char &accessMac = access[7];
+	accessMac = 0;
 	accessLen = 8;
-	for (int i=0; i<accessLen; ++i)
+	for (int i=0; i<accessLen-1; ++i)
 	{
 		access[i] = m_accessMap[(uchar)(rand() % KEY_MAP_SIZE)];
+		accessMac ^= access[i];
 	}
+	accessMac = m_accessMap[accessMac];	 
 	access[accessLen] = '\0';
 	return true;
 }
 
 bool CSafeServer::createAccessRep(char *access, int accessLen, char *accessRep)
-{
+{	trace_worker();
 	char keyInf[KEY_INF_LEN];
 	getAccessKeyInf(keyInf, sizeof(keyInf));
 	CSafeServer::instance()->decode(keyInf, sizeof(keyInf), access, accessLen, accessRep);
@@ -205,19 +210,84 @@ bool CSafeServer::createAccessRep(char *access, int accessLen, char *accessRep)
 	return true;
 }
 
+char CSafeServer::createAccMac(char *access, int accessLen)
+{	trace_worker();
+	char accessMac = 0;
+	for (int i=0; i<accessLen-1; ++i)
+	{
+		accessMac ^= access[i];
+	}
+	accessMac = m_accessMap[accessMac];
+	return accessMac;
+}
+
 bool CSafeServer::verifyAccess(char *access, int accessLen, char *accessRep)
-{
+{	trace_worker();
+	trace_printf("accessLen  %d", accessLen);
+
+	char accessMac = createAccMac(access, accessLen);
+	if (accessMac != access[accessLen-1])
+	{	trace_printf("NULL");
+		return false;
+	}
+	
 	char tmpAccessRep[32];
 	bool bRet = createAccessRep(access, accessLen, tmpAccessRep);
 	if (!bRet)
-	{
+	{	trace_printf("NULL");
 		return false;
 	}
 
 	if (memcmp(tmpAccessRep, accessRep, accessLen))
-	{
+	{	trace_printf("NULL");
 		return false;
 	}
+	trace_printf("NULL");	
 	return true;
 }
+
+int CSafeServer::termXorMac(char *pData, int nLen, char *pMac, int * pnMacLen)
+{
+	char mac_block[8];
+	char tmp[16];
+	int i, k;
+
+	memset(mac_block, 0, 8);
+	k = (nLen) / 8;
+	for (i = 0; i < k; ++ i)
+		Xor(mac_block, pData + i * 8, 8);
+
+	Xor(mac_block, pData + k * 8, nLen % 8);
+
+
+	DES3(mac_block, tmp, (char *)m_mainKey, ENCODE);
+
+	memcpy(pMac, tmp, 8);
+	*pnMacLen = 8;
+	return 0;
+}
+
+//XOR MAC算法
+int CSafeServer::encryptMac(unsigned char *src, int vnLen, unsigned char *mac)
+{
+	int nRet, i, BlockNum, mac_len;
+	unsigned char MacBlock[8];
+
+// 先初始化为8个字节
+	memset(MacBlock, 0, 8);
+	BlockNum = (vnLen) / 8;
+	for (i = 0; i < BlockNum; ++ i)
+		Xor((char *)MacBlock, (char *)src + i * 8, 8);
+	Xor((char *)MacBlock, (char *)src + BlockNum * 8, vnLen % 8);
+
+//计算MAC
+	nRet = termXorMac((char *)MacBlock, 8, (char *)mac, &mac_len);
+	if (nRet != 0)
+	{
+		return -1;
+	}
+	
+	return 0;
+}
+
 
