@@ -3,6 +3,7 @@
 #include "safe_server.h"
 #include "link_tool.h"
 #include "net_client.h"
+#include "user_manager.h"
 
 using namespace base;
 extern CPthreadMutex g_insMutexCalc;
@@ -35,7 +36,9 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
 	CSafeServer::instance()->decode(keyInf, keyInfLen, passWord, passWordLen,passWord);
 	printf("CVerify::dealDataHandle %s  %s  %s\n", oper, userName, passWord);
-
+	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
+	CUserManager::instance()->login(traceInfoId, userName, passWord);
+	
 	{
 		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
 		
