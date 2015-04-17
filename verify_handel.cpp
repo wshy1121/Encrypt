@@ -110,12 +110,29 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {	trace_worker();
 	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
-	bool bRet = CUserManager::instance()->dealVerify(NULL, 0);
+
+
+	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	char *oper = dataInf.m_infs[0];
+	char *sessionId = dataInf.m_infs[1];
+
+	char *access = dataInf.m_infs[2];	
+	int accessLen = dataInf.m_infLens[2];
+	char *accessRep = dataInf.m_infs[3];
+
+	bool bRet = CUserManager::instance()->verifyAccess(access, accessLen, accessRep);
+	trace_printf("bRet  %d", bRet);
 	if (!bRet)
 	{	trace_printf("NULL");
 		return ;
 	}
-
+	trace_printf("NULL");
+	{
+		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		dataInf.putInf(oper);
+		dataInf.putInf(sessionId);//session id(大于0)
+		dataInf.packet();
+	}	
 	return ;
 }
 
@@ -238,12 +255,22 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 	CLogDataInf dataInf;
 	dataInf.putInf((char *)"verifyAccess");
 	dataInf.putInf(sessionId);//session id(大于0)
+	dataInf.putInf(access, accessLen);//access
+	dataInf.putInf(accessRep, accessLen);//accessRep
+	
 	trace_printf("NULL");
 	char *packet = NULL;
 	int packetLen = dataInf.packet(packet);
 	CNetClient::instance()->send(packet, packetLen);
 	CNetClient::instance()->receiveInfData(&dataInf);
 	trace_printf("NULL");
+
+	char *oper = dataInf.m_infs[0];
+	trace_printf("oper  %s", oper);
+	if (memcmp(oper, "verifyAccess", strlen("verifyAccess")))
+	{
+		return false;
+	}
 	return true;
 }
 
