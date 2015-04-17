@@ -221,6 +221,12 @@ char CSafeServer::createAccMac(char *access, int accessLen)
 	return accessMac;
 }
 
+bool CSafeServer::isAccAvailable(char *access, int accessLen)
+{	trace_worker();
+	bool bRet = createAccMac(access, accessLen) == access[accessLen-1];
+	trace_printf("bRet  %d", bRet);
+	return bRet;
+}
 bool CSafeServer::verifyAccess(char *access, int accessLen, char *accessRep)
 {	trace_worker();
 	trace_printf("accessLen  %d", accessLen);

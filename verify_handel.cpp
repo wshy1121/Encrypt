@@ -12,6 +12,7 @@ CVerifyHandle::CVerifyHandle()
 {
 	addMethod("login", (IDealDataHandle::Method)&CVerifyHandle::login);
 	addMethod("accessRep", (IDealDataHandle::Method)&CVerifyHandle::accessRep);
+	addMethod("verifyAccess", (IDealDataHandle::Method)&CVerifyHandle::verifyAccess);
 }
 
 
@@ -86,7 +87,12 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	int accessLen = dataInf.m_infLens[2];
 	char accessRep[32];
 
-	bool bRet = CSafeServer::instance()->createAccessRep(access, accessLen, accessRep);
+	bool bRet = CSafeServer::instance()->isAccAvailable(access, accessLen);
+	if (!bRet)
+	{	trace_printf("NULL");
+		return ;
+	}
+	bRet = CSafeServer::instance()->createAccessRep(access, accessLen, accessRep);
 	if (!bRet)
 	{	trace_printf("NULL");
 		return ;
@@ -99,6 +105,18 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 		dataInf.packet();
 	}
 	trace_printf("NULL");	
+}
+
+void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
+{	trace_worker();
+	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
+	bool bRet = false;//CUserManager::instance()->dealAccess(access, accessLen);
+	if (!bRet)
+	{	trace_printf("NULL");
+		return ;
+	}
+
+	return ;
 }
 
 CVerifyClient *CVerifyClient::_instance;

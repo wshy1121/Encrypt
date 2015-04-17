@@ -16,6 +16,7 @@ public:
 	bool createAccessRep(char *access, int accessLen, char *accessRep);	
 	bool verifyAccess(char *access, int accessLen, char *accessRep);
 	int encryptMac(unsigned char *src, int vnLen, unsigned char *mac);
+	bool isAccAvailable(char *access, int accessLen);
 private:
 	CSafeServer();
 	bool getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey);
