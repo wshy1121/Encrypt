@@ -18,9 +18,8 @@ CVerifyHandle::CVerifyHandle()
 
 bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 {	trace_worker();
-	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
-	bool bRet = CUserManager::instance()->isLogined(traceInfoId);
-
+	CUserInf *userInf = pCalcInf->m_userInf;
+	bool bRet = CUserManager::instance()->isLogined(userInf);
 	trace_printf("bRet  %d", bRet);
 	return bRet;
 }
@@ -45,8 +44,8 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
 	CSafeServer::instance()->decode(keyInf, keyInfLen, passWord, passWordLen,passWord);
 	printf("CVerify::dealDataHandle %s  %s  %s\n", oper, userName, passWord);
-	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
-	CUserManager::instance()->login(traceInfoId, userName, passWord);
+	CUserInf *userInf = pCalcInf->m_userInf;
+	CUserManager::instance()->login(userName, passWord, userInf);
 	
 	{
 		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
