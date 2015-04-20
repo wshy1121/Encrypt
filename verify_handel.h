@@ -2,6 +2,7 @@
 #define _VERIFY_HANDLE_H_
 
 #include "data_handle.h"
+#include "user_manager.h"
 
 class CVerifyHandle : public IDealDataHandle
 {
@@ -11,6 +12,7 @@ public:
 	void login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 	void accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 	void verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
+	void getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf);
 private:
 	bool isAvailable(TimeCalcInf *pCalcInf);
 };
@@ -24,6 +26,7 @@ public:
 	bool createAccess(char *access, int &accessLen);	
 	bool getAccessRep(char *access, int accessLen, char *accessRep);
 	bool verifyAccess(char *access, int accessLen, char *accessRep);
+	bool getUserInf(CUserInf *userInf);
 private:
 	CVerifyClient();
 private:

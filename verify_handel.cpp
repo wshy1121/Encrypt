@@ -13,6 +13,7 @@ CVerifyHandle::CVerifyHandle()
 	addMethod("login", (IDealDataHandle::Method)&CVerifyHandle::login);
 	addMethod("accessRep", (IDealDataHandle::Method)&CVerifyHandle::accessRep);
 	addMethod("verifyAccess", (IDealDataHandle::Method)&CVerifyHandle::verifyAccess);
+	addMethod("getUserInf", (IDealDataHandle::Method)&CVerifyHandle::getUserInf);
 }
 
 
@@ -133,6 +134,23 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 		dataInf.packet();
 	}	
 	return ;
+}
+
+void CVerifyHandle::getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
+{
+	base::CLogDataInf &reqDataInf = pCalcInf->m_dataInf;
+	char *oper = reqDataInf.m_infs[0];
+	char *sessionId = reqDataInf.m_infs[1];
+	
+	CUserInf *userInf = pCalcInf->m_userInf;
+	base::CLogDataInf &repDataInf = repCalcInf->m_dataInf;
+	repDataInf.putInf(oper);
+	repDataInf.putInf(sessionId);//session id(大于0)
+	repDataInf.putInf((char *)userInf->m_userName.c_str());
+	repDataInf.putInf((char *)userInf->m_passWord.c_str());
+	repDataInf.putInf((char *)userInf->m_logPath.c_str());
+	repDataInf.packet();
+
 }
 
 CVerifyClient *CVerifyClient::_instance;
@@ -264,12 +282,37 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 	CNetClient::instance()->receiveInfData(&dataInf);
 	trace_printf("NULL");
 
-	char *oper = dataInf.m_infs[0];
-	trace_printf("oper  %s", oper);
-	if (memcmp(oper, "verifyAccess", strlen("verifyAccess")))
-	{
+	if (dataInf.m_infsNum == 0)
+	{	trace_printf("NULL");
 		return false;
 	}
+	return true;
+}
+
+
+bool CVerifyClient::getUserInf(CUserInf *userInf)
+{	trace_worker();
+	char sessionId[16];
+	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+
+	CLogDataInf dataInf;
+	dataInf.putInf((char *)"getUserInf");
+	dataInf.putInf(sessionId);//session id(大于0)
+
+	char *packet = NULL;
+	int packetLen = dataInf.packet(packet);
+	CNetClient::instance()->send(packet, packetLen);
+	CNetClient::instance()->receiveInfData(&dataInf);
+
+	if (dataInf.m_infsNum == 0)
+	{	trace_printf("NULL");
+		return false;
+	}
+	trace_printf("NULL");
+
+	userInf->m_userName = dataInf.m_infs[2];
+	userInf->m_passWord = dataInf.m_infs[3];
+	userInf->m_logPath = dataInf.m_infs[4];	
 	return true;
 }
 
