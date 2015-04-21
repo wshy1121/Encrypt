@@ -149,6 +149,7 @@ void CVerifyHandle::getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	repDataInf.putInf((char *)userInf->m_userName.c_str());
 	repDataInf.putInf((char *)userInf->m_passWord.c_str());
 	repDataInf.putInf((char *)userInf->m_logPath.c_str());
+	repDataInf.putInf((char *)userInf->m_fileName.c_str());
 	repDataInf.packet();
 
 }
@@ -313,6 +314,7 @@ bool CVerifyClient::getUserInf(CUserInf *userInf)
 	userInf->m_userName = dataInf.m_infs[2];
 	userInf->m_passWord = dataInf.m_infs[3];
 	userInf->m_logPath = dataInf.m_infs[4];	
+	userInf->m_fileName = dataInf.m_infs[5];	
 	return true;
 }
 
