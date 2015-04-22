@@ -19,7 +19,7 @@ CVerifyHandle::CVerifyHandle()
 
 bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 {	trace_worker();
-	CUserInf *userInf = pCalcInf->m_userInf;
+	CUserInf *userInf = pCalcInf->m_userInf.get();
 	bool bRet = CUserManager::instance()->isLogined(userInf);
 	trace_printf("bRet  %d", bRet);
 	return bRet;
@@ -45,7 +45,7 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
 	CSafeServer::instance()->decode(keyInf, keyInfLen, passWord, passWordLen,passWord);
 	printf("CVerify::dealDataHandle %s  %s  %s\n", oper, userName, passWord);
-	CUserInf *userInf = pCalcInf->m_userInf;
+	CUserInf *userInf = pCalcInf->m_userInf.get();
 	CUserManager::instance()->login(userName, passWord, userInf);
 	
 	{
@@ -142,7 +142,7 @@ void CVerifyHandle::getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	char *oper = reqDataInf.m_infs[0];
 	char *sessionId = reqDataInf.m_infs[1];
 	
-	CUserInf *userInf = pCalcInf->m_userInf;
+	CUserInf *userInf = pCalcInf->m_userInf.get();
 	base::CLogDataInf &repDataInf = repCalcInf->m_dataInf;
 	repDataInf.putInf(oper);
 	repDataInf.putInf(sessionId);//session id(´óÓÚ0)
