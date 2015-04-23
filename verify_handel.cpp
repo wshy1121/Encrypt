@@ -19,8 +19,8 @@ CVerifyHandle::CVerifyHandle()
 
 bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 {	trace_worker();
-	CUserInf *userInf = pCalcInf->m_userInf.get();
-	bool bRet = CUserManager::instance()->isLogined(userInf);
+	CClientInf *clientInf = pCalcInf->m_clientInf.get();
+	bool bRet = CUserManager::instance()->isLogined(clientInf);
 	trace_printf("bRet  %d", bRet);
 	return bRet;
 }
@@ -45,8 +45,8 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
 	CSafeServer::instance()->decode(keyInf, keyInfLen, passWord, passWordLen,passWord);
 	printf("CVerify::dealDataHandle %s  %s  %s\n", oper, userName, passWord);
-	CUserInf *userInf = pCalcInf->m_userInf.get();
-	CUserManager::instance()->login(userName, passWord, userInf);
+	CClientInf *clientInf = pCalcInf->m_clientInf.get();
+	CUserManager::instance()->login(userName, passWord, clientInf);
 	
 	{
 		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
@@ -142,14 +142,14 @@ void CVerifyHandle::getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	char *oper = reqDataInf.m_infs[0];
 	char *sessionId = reqDataInf.m_infs[1];
 	
-	CUserInf *userInf = pCalcInf->m_userInf.get();
+	CClientInf *clientInf = pCalcInf->m_clientInf.get();
 	base::CLogDataInf &repDataInf = repCalcInf->m_dataInf;
 	repDataInf.putInf(oper);
 	repDataInf.putInf(sessionId);//session id(´óÓÚ0)
-	repDataInf.putInf((char *)userInf->m_userName.c_str());
-	repDataInf.putInf((char *)userInf->m_passWord.c_str());
-	repDataInf.putInf((char *)userInf->m_logPath.c_str());
-	repDataInf.putInf((char *)userInf->m_fileName.c_str());
+	repDataInf.putInf((char *)clientInf->m_userName.c_str());
+	repDataInf.putInf((char *)clientInf->m_passWord.c_str());
+	repDataInf.putInf((char *)clientInf->m_logPath.c_str());
+	repDataInf.putInf((char *)clientInf->m_fileName.c_str());
 	repDataInf.packet();
 
 }
@@ -291,7 +291,7 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 }
 
 
-bool CVerifyClient::getUserInf(CUserInf *userInf)
+bool CVerifyClient::getClientInf(CClientInf *clientInf)
 {	trace_worker();
 	char sessionId[16];
 	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
@@ -311,10 +311,10 @@ bool CVerifyClient::getUserInf(CUserInf *userInf)
 	}
 	trace_printf("NULL");
 
-	userInf->m_userName = dataInf.m_infs[2];
-	userInf->m_passWord = dataInf.m_infs[3];
-	userInf->m_logPath = dataInf.m_infs[4];	
-	userInf->m_fileName = dataInf.m_infs[5];	
+	clientInf->m_userName = dataInf.m_infs[2];
+	clientInf->m_passWord = dataInf.m_infs[3];
+	clientInf->m_logPath = dataInf.m_infs[4];	
+	clientInf->m_fileName = dataInf.m_infs[5];	
 	return true;
 }
 

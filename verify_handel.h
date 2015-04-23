@@ -26,7 +26,7 @@ public:
 	bool createAccess(char *access, int &accessLen);	
 	bool getAccessRep(char *access, int accessLen, char *accessRep);
 	bool verifyAccess(char *access, int accessLen, char *accessRep);
-	bool getUserInf(CUserInf *userInf);
+	bool getClientInf(CClientInf *clientInf);
 private:
 	CVerifyClient();
 private:
