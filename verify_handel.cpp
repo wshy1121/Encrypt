@@ -13,7 +13,7 @@ CVerifyHandle::CVerifyHandle()
 	addMethod("login", (IDealDataHandle::Method)&CVerifyHandle::login);
 	addMethod("accessRep", (IDealDataHandle::Method)&CVerifyHandle::accessRep);
 	addMethod("verifyAccess", (IDealDataHandle::Method)&CVerifyHandle::verifyAccess);
-	addMethod("getUserInf", (IDealDataHandle::Method)&CVerifyHandle::getUserInf);
+	addMethod("getClientInf", (IDealDataHandle::Method)&CVerifyHandle::getClientInf);
 }
 
 
@@ -136,7 +136,7 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	return ;
 }
 
-void CVerifyHandle::getUserInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
+void CVerifyHandle::getClientInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
 	base::CLogDataInf &reqDataInf = pCalcInf->m_dataInf;
 	char *oper = reqDataInf.m_infs[0];
@@ -297,7 +297,7 @@ bool CVerifyClient::getClientInf(CClientInf *clientInf)
 	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
 
 	CLogDataInf dataInf;
-	dataInf.putInf((char *)"getUserInf");
+	dataInf.putInf((char *)"getClientInf");
 	dataInf.putInf(sessionId);//session id(´óÓÚ0)
 
 	char *packet = NULL;
