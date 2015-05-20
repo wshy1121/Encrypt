@@ -150,7 +150,7 @@ bool CSafeServer::getRealKey(uchar *keyInf, int keyInfLen, uchar *pKey)
 	uchar *realKeyMap = realKeyInf + pos;
 	for (int i=0; i<KEY_MAP_SIZE;)
 	{
-		Decode(TR_DES, keyMapIndexs, keyLen, keyMapIndexs, mainKey);
+		Decode(TR_DES, keyMapIndexs+i, keyLen, keyMapIndexs+i, mainKey);
 		i+= keyLen;
 	}
 	for (int i=0; i<KEY_MAP_SIZE; ++i)
