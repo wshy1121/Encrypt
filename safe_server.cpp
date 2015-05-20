@@ -110,7 +110,7 @@ bool CSafeServer::getAccessKeyInf(char *keyInf, int keyInfLen)
 	{
 		return false;
 	}
-	memset(keyInf, '0x11', keyInfLen);
+	memset(keyInf, '\x11', keyInfLen);
 	for (int i=0; i<KEY_MAP_SIZE; ++i)
 	{
 		keyInf[i] = m_keyMap[i];
