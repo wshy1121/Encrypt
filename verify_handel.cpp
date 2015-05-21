@@ -198,8 +198,8 @@ bool CVerifyClient::login(char *userName, char *passWord)
 
 	char *packet = NULL;
 	int packetLen = dataInf.packet(packet);
-	CNetClient::instance()->send(packet, packetLen);
-	CNetClient::instance()->receiveInfData(&dataInf);
+	CNetClient::instance()->dealPacket(packet, packetLen, dataInf);
+	
 
 	{
 		char *oper = dataInf.m_infs[0];
@@ -251,8 +251,7 @@ bool CVerifyClient::getAccessRep(char *access, int accessLen, char *accessRep)
 
 	char *packet = NULL;
 	int packetLen = dataInf.packet(packet);
-	CNetClient::instance()->send(packet, packetLen);
-	CNetClient::instance()->receiveInfData(&dataInf);
+	CNetClient::instance()->dealPacket(packet, packetLen, dataInf);
 	
 	memcpy(accessRep, dataInf.m_infs[2], accessLen);
 	accessRep[accessLen] = '\0';
@@ -279,8 +278,8 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 	trace_printf("NULL");
 	char *packet = NULL;
 	int packetLen = dataInf.packet(packet);
-	CNetClient::instance()->send(packet, packetLen);
-	CNetClient::instance()->receiveInfData(&dataInf);
+	CNetClient::instance()->dealPacket(packet, packetLen, dataInf);
+	
 	trace_printf("NULL");
 
 	if (dataInf.m_infsNum == 0)
@@ -302,8 +301,8 @@ bool CVerifyClient::getClientInf(CClientInf *clientInf)
 
 	char *packet = NULL;
 	int packetLen = dataInf.packet(packet);
-	CNetClient::instance()->send(packet, packetLen);
-	CNetClient::instance()->receiveInfData(&dataInf);
+	CNetClient::instance()->dealPacket(packet, packetLen, dataInf);
+	
 
 	if (dataInf.m_infsNum == 0)
 	{	trace_printf("NULL");
