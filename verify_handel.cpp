@@ -27,7 +27,7 @@ bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 
 void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
-	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	CLogDataInf &dataInf = pCalcInf->m_dataInf;
 
 	char *oper = dataInf.m_infs[0];
 	char *sessionId = dataInf.m_infs[1];
@@ -49,7 +49,7 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CUserManager::instance()->login(userName, passWord, clientInf);
 	
 	{
-		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		CLogDataInf &dataInf = repCalcInf->m_dataInf;
 		
 		char keyInf[KEY_INF_LEN];
 		CSafeServer::instance()->createKeyInf(keyInf, sizeof(keyInf));
@@ -79,7 +79,7 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	{	trace_printf("NULL");
 		return ;
 	}
-	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	CLogDataInf &dataInf = pCalcInf->m_dataInf;
 	char *oper = dataInf.m_infs[0];
 	char *sessionId = dataInf.m_infs[1];
 
@@ -98,7 +98,7 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 		return ;
 	}
 	{	trace_printf("NULL");
-		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		CLogDataInf &dataInf = repCalcInf->m_dataInf;
 		dataInf.putInf(oper);
 		dataInf.putInf(sessionId);//session id(大于0)
 		dataInf.putInf(accessRep, accessLen);//accessRep
@@ -112,7 +112,7 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
 
 
-	base::CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	CLogDataInf &dataInf = pCalcInf->m_dataInf;
 	char *oper = dataInf.m_infs[0];
 	char *sessionId = dataInf.m_infs[1];
 
@@ -128,7 +128,7 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	}
 	trace_printf("NULL");
 	{
-		base::CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		CLogDataInf &dataInf = repCalcInf->m_dataInf;
 		dataInf.putInf(oper);
 		dataInf.putInf(sessionId);//session id(大于0)
 		dataInf.packet();
@@ -138,12 +138,12 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 
 void CVerifyHandle::getClientInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
-	base::CLogDataInf &reqDataInf = pCalcInf->m_dataInf;
+	CLogDataInf &reqDataInf = pCalcInf->m_dataInf;
 	char *oper = reqDataInf.m_infs[0];
 	char *sessionId = reqDataInf.m_infs[1];
 	
 	CClientInf *clientInf = pCalcInf->m_clientInf.get();
-	base::CLogDataInf &repDataInf = repCalcInf->m_dataInf;
+	CLogDataInf &repDataInf = repCalcInf->m_dataInf;
 	repDataInf.putInf(oper);
 	repDataInf.putInf(sessionId);//session id(大于0)
 	repDataInf.putInf((char *)clientInf->m_userName.c_str());
