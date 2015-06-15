@@ -191,7 +191,7 @@ bool CSafeServer::createAccess(char *access, int &accessLen)
 		access[i] = m_accessMap[(uchar)(rand() % KEY_MAP_SIZE)];
 		accessMac ^= access[i];
 	}
-	accessMac = m_accessMap[accessMac];	 
+	accessMac = m_accessMap[(uchar)accessMac];	 
 	access[accessLen] = '\0';
 	return true;
 }
@@ -217,7 +217,7 @@ char CSafeServer::createAccMac(char *access, int accessLen)
 	{
 		accessMac ^= access[i];
 	}
-	accessMac = m_accessMap[accessMac];
+	accessMac = m_accessMap[(uchar)accessMac];
 	return accessMac;
 }
 

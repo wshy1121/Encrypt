@@ -44,7 +44,7 @@ void Xor(char *pX1, char *pX2, int nLen)
 //³õÊ¼ÖÃ»»
 static void IP(char *p64) 
 {
-    char mapper[64] = {
+    unsigned char mapper[64] = {
         57, 49, 41, 33, 25, 17,  9,  1, 59, 51, 43, 35, 27, 19, 11,  3,
         61, 53, 45, 37, 29, 21, 13,  5, 63, 55, 47, 39, 31, 23, 15,  7,
         56, 48, 40, 32, 24, 16,  8,  0, 58, 50, 42, 34, 26, 18, 10,  2,
@@ -62,7 +62,7 @@ static void IP(char *p64)
 //Ä©ÖÃ»»
 static void EP(char *p64)
 {
-    char mapper[64] = {
+    unsigned char mapper[64] = {
         39,  7, 47, 15, 55, 23, 63, 31, 38,  6, 46, 14, 54, 22, 62, 30,
         37,  5, 45, 13, 53, 21, 61, 29, 36,  4, 44, 12, 52, 20, 60, 28,
         35,  3, 43, 11, 51, 19, 59, 27, 34,  2, 42, 10, 50, 18, 58, 26,
@@ -80,7 +80,7 @@ static void EP(char *p64)
 //½«8×Ö½ÚÃÜÔ¿,À©Õ¹²¢ÖÃ»»³É56×Ö½ÚÄ£Ê½
 static void InitKey(char *p8, char *p56)
 {
-    char mapper[] = {
+    unsigned char mapper[] = {
         56, 48, 40, 32, 24, 16,  8,  0, 57, 49, 41, 33, 25, 17,  
          9,  1, 58, 50, 42, 34, 26, 18, 10,  2, 59, 51, 43, 35, 
         62, 54, 46, 38, 30, 22, 14,  6, 61, 53, 45, 37, 29, 21, 
@@ -126,7 +126,7 @@ static void RShift(char *p28, int nShift)
 //¼ÆËã×ÓÃÜÔ¿
 static void SubKey(char *p56, char *p48, int nRound, char cFlag)
 {
-    char mapper[] = {
+    unsigned char mapper[] = {
         13, 16, 10, 23,  0,  4,  2, 27, 14,  5, 20,  9,
         22, 18, 11,  3, 25,  7, 15,  6, 26, 19, 12,  1,
         40, 51, 30, 36, 46, 54, 29, 39, 50, 44, 32, 47,
@@ -158,7 +158,7 @@ static void SubKey(char *p56, char *p48, int nRound, char cFlag)
 //À©Õ¹ÖÃ»» 32×Ö½Ú -> 48×Ö½Ú
 static void EXP(char *p32, char *p48)
 {
-    char mapper[] = {
+    unsigned char mapper[] = {
         31,  0,  1,  2,  3,  4,  3,  4,  5,  6,  7,  8,
          7,  8,  9, 10, 11, 12, 11, 12, 13, 14, 15, 16,
         15, 16, 17, 18, 19, 20, 19, 20, 21, 22, 23, 24,
@@ -242,7 +242,7 @@ static void S(char *p48, char *p32)
 //PºÐÖÃ»»
 static void P(char *p32)
 {
-    char mapper[] = {
+    unsigned char mapper[] = {
         15,  6, 19, 20, 28, 11, 27, 16,  0, 14, 22, 25,  4, 17, 30,  9,
          1,  7, 23, 13, 31, 26,  2,  8, 18, 12, 29,  5, 21, 10,  3, 24,
     };

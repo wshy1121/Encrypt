@@ -109,7 +109,7 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 
 void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {	trace_worker();
-	TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
+	//TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
 
 
 	CLogDataInf &dataInf = pCalcInf->m_dataInf;
@@ -176,7 +176,7 @@ CVerifyClient::CVerifyClient()
 bool CVerifyClient::login(char *userName, char *passWord)
 {
 	char sessionId[16];
-	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+	base::snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
 	
 	char keyInf[KEY_INF_LEN];
 	CSafeServer::instance()->createKeyInf(keyInf, sizeof(keyInf));
@@ -203,7 +203,7 @@ bool CVerifyClient::login(char *userName, char *passWord)
 
 	{
 		char *oper = dataInf.m_infs[0];
-		char *sessionId = dataInf.m_infs[1];
+		//char *sessionId = dataInf.m_infs[1];
 		
 		char *keyInf = dataInf.m_infs[2];
 		int keyInfLen = dataInf.m_infLens[2];
@@ -242,7 +242,7 @@ bool CVerifyClient::createAccess(char *access, int &accessLen)
 bool CVerifyClient::getAccessRep(char *access, int accessLen, char *accessRep)
 {
 	char sessionId[16];
-	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+	base::snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
 
 	CLogDataInf dataInf;
 	dataInf.putInf((char *)"accessRep");
@@ -267,7 +267,7 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 	}
 	trace_printf("NULL");	
 	char sessionId[16];
-	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+	base::snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
 
 	CLogDataInf dataInf;
 	dataInf.putInf((char *)"verifyAccess");
@@ -293,7 +293,7 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 bool CVerifyClient::getClientInf(CClientInf *clientInf)
 {	trace_worker();
 	char sessionId[16];
-	snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
+	base::snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
 
 	CLogDataInf dataInf;
 	dataInf.putInf((char *)"getClientInf");
