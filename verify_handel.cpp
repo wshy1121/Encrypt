@@ -7,6 +7,7 @@
 
 using namespace base;
 extern CPthreadMutex g_insMutexCalc;
+static CVerifyHandle verifyHandle;
 
 CVerifyHandle::CVerifyHandle()
 {
