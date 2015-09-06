@@ -28,19 +28,19 @@ bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 
 void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
-	CLogDataInf &dataInf = pCalcInf->m_dataInf;
+	std::shared_ptr<CLogDataInf> &dataInf = pCalcInf->m_dataInf;
 
-	char *oper = dataInf.m_infs[0];
-	char *sessionId = dataInf.m_infs[1];
+	char *oper = dataInf->m_infs[0];
+	char *sessionId = dataInf->m_infs[1];
 	
-	char *keyInf = dataInf.m_infs[2];
-	int keyInfLen = dataInf.m_infLens[2];
+	char *keyInf = dataInf->m_infs[2];
+	int keyInfLen = dataInf->m_infLens[2];
 	
-	char *userName = dataInf.m_infs[3];	
-	int userNameLen = dataInf.m_infLens[3];
+	char *userName = dataInf->m_infs[3];	
+	int userNameLen = dataInf->m_infLens[3];
 	
-	char *passWord = dataInf.m_infs[4];
-	int passWordLen = dataInf.m_infLens[4];
+	char *passWord = dataInf->m_infs[4];
+	int passWordLen = dataInf->m_infLens[4];
 
 
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
@@ -50,7 +50,7 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CUserManager::instance()->login(userName, passWord, clientInf);
 	
 	{
-		CLogDataInf &dataInf = repCalcInf->m_dataInf;
+		std::shared_ptr<CLogDataInf> &dataInf = repCalcInf->m_dataInf;
 		
 		char keyInf[KEY_INF_LEN];
 		CSafeServer::instance()->createKeyInf(keyInf, sizeof(keyInf));
@@ -63,12 +63,12 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 		int _passWordLen = sizeof(_passWord);
 		CSafeServer::instance()->encode(keyInf, sizeof(keyInf), passWord, strlen(passWord)+1, _passWord, _passWordLen);
 
-		dataInf.putInf(oper);
-		dataInf.putInf(sessionId);//session id(大于0)
-		dataInf.putInf(keyInf, sizeof(keyInf));//密钥
-		dataInf.putInf(_userName, _userNameLen);//用户名
-		dataInf.putInf(_passWord, _passWordLen); //密码
-		dataInf.packet();
+		dataInf->putInf(oper);
+		dataInf->putInf(sessionId);//session id(大于0)
+		dataInf->putInf(keyInf, sizeof(keyInf));//密钥
+		dataInf->putInf(_userName, _userNameLen);//用户名
+		dataInf->putInf(_passWord, _passWordLen); //密码
+		dataInf->packet();
 
 	}
 }
@@ -80,12 +80,12 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	{	trace_printf("NULL");
 		return ;
 	}
-	CLogDataInf &dataInf = pCalcInf->m_dataInf;
-	char *oper = dataInf.m_infs[0];
-	char *sessionId = dataInf.m_infs[1];
+	std::shared_ptr<CLogDataInf> &dataInf = pCalcInf->m_dataInf;
+	char *oper = dataInf->m_infs[0];
+	char *sessionId = dataInf->m_infs[1];
 
-	char *access = dataInf.m_infs[2];	
-	int accessLen = dataInf.m_infLens[2];
+	char *access = dataInf->m_infs[2];	
+	int accessLen = dataInf->m_infLens[2];
 	char accessRep[32];
 
 	bool bRet = CSafeServer::instance()->isAccAvailable(access, accessLen);
@@ -99,11 +99,11 @@ void CVerifyHandle::accessRep(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 		return ;
 	}
 	{	trace_printf("NULL");
-		CLogDataInf &dataInf = repCalcInf->m_dataInf;
-		dataInf.putInf(oper);
-		dataInf.putInf(sessionId);//session id(大于0)
-		dataInf.putInf(accessRep, accessLen);//accessRep
-		dataInf.packet();
+		std::shared_ptr<CLogDataInf> &dataInf = repCalcInf->m_dataInf;
+		dataInf->putInf(oper);
+		dataInf->putInf(sessionId);//session id(大于0)
+		dataInf->putInf(accessRep, accessLen);//accessRep
+		dataInf->packet();
 	}
 	trace_printf("NULL");	
 }
@@ -113,13 +113,13 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	//TraceInfoId &traceInfoId = pCalcInf->m_traceInfoId;
 
 
-	CLogDataInf &dataInf = pCalcInf->m_dataInf;
-	char *oper = dataInf.m_infs[0];
-	char *sessionId = dataInf.m_infs[1];
+	std::shared_ptr<CLogDataInf> &dataInf = pCalcInf->m_dataInf;
+	char *oper = dataInf->m_infs[0];
+	char *sessionId = dataInf->m_infs[1];
 
-	char *access = dataInf.m_infs[2];	
-	int accessLen = dataInf.m_infLens[2];
-	char *accessRep = dataInf.m_infs[3];
+	char *access = dataInf->m_infs[2];	
+	int accessLen = dataInf->m_infLens[2];
+	char *accessRep = dataInf->m_infs[3];
 
 	bool bRet = CUserManager::instance()->verifyAccess(access, accessLen, accessRep);
 	trace_printf("bRet  %d", bRet);
@@ -129,29 +129,29 @@ void CVerifyHandle::verifyAccess(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	}
 	trace_printf("NULL");
 	{
-		CLogDataInf &dataInf = repCalcInf->m_dataInf;
-		dataInf.putInf(oper);
-		dataInf.putInf(sessionId);//session id(大于0)
-		dataInf.packet();
+		std::shared_ptr<CLogDataInf> &dataInf = repCalcInf->m_dataInf;
+		dataInf->putInf(oper);
+		dataInf->putInf(sessionId);//session id(大于0)
+		dataInf->packet();
 	}	
 	return ;
 }
 
 void CVerifyHandle::getClientInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 {
-	CLogDataInf &reqDataInf = pCalcInf->m_dataInf;
-	char *oper = reqDataInf.m_infs[0];
-	char *sessionId = reqDataInf.m_infs[1];
+	std::shared_ptr<CLogDataInf> &reqDataInf = pCalcInf->m_dataInf;
+	char *oper = reqDataInf->m_infs[0];
+	char *sessionId = reqDataInf->m_infs[1];
 	
 	CClientInf *clientInf = pCalcInf->m_clientInf.get();
-	CLogDataInf &repDataInf = repCalcInf->m_dataInf;
-	repDataInf.putInf(oper);
-	repDataInf.putInf(sessionId);//session id(大于0)
-	repDataInf.putInf((char *)clientInf->m_userName.c_str());
-	repDataInf.putInf((char *)clientInf->m_passWord.c_str());
-	repDataInf.putInf((char *)clientInf->m_logPath.c_str());
-	repDataInf.putInf((char *)clientInf->m_fileName.c_str());
-	repDataInf.packet();
+	std::shared_ptr<CLogDataInf> &repDataInf = repCalcInf->m_dataInf;
+	repDataInf->putInf(oper);
+	repDataInf->putInf(sessionId);//session id(大于0)
+	repDataInf->putInf((char *)clientInf->m_userName.c_str());
+	repDataInf->putInf((char *)clientInf->m_passWord.c_str());
+	repDataInf->putInf((char *)clientInf->m_logPath.c_str());
+	repDataInf->putInf((char *)clientInf->m_fileName.c_str());
+	repDataInf->packet();
 
 }
 
