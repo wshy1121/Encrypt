@@ -19,7 +19,7 @@ CVerifyHandle::CVerifyHandle()
 
 bool CVerifyHandle::isAvailable(TimeCalcInf *pCalcInf)
 {	trace_worker();
-	CClientInf *clientInf = pCalcInf->m_clientInf.get();
+	IClientInf *clientInf = pCalcInf->m_clientInf.get();
 	bool bRet = CUserManager::instance()->isLogined(clientInf);
 	trace_printf("bRet  %d", bRet);
 	return bRet;
@@ -45,7 +45,7 @@ void CVerifyHandle::login(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	CSafeServer::instance()->decode(keyInf, keyInfLen, userName, userNameLen,userName);
 	CSafeServer::instance()->decode(keyInf, keyInfLen, passWord, passWordLen,passWord);
 	printf("CVerify::dealDataHandle %s  %s  %s\n", oper, userName, passWord);
-	CClientInf *clientInf = pCalcInf->m_clientInf.get();
+	IClientInf *clientInf = pCalcInf->m_clientInf.get();
 	CUserManager::instance()->login(userName, passWord, clientInf);
 	
 	{
@@ -142,7 +142,7 @@ void CVerifyHandle::getClientInf(TimeCalcInf *pCalcInf, TimeCalcInf *repCalcInf)
 	char *oper = reqDataInf->m_infs[0];
 	char *sessionId = reqDataInf->m_infs[1];
 	
-	CClientInf *clientInf = pCalcInf->m_clientInf.get();
+	IClientInf *clientInf = pCalcInf->m_clientInf.get();
 	std::shared_ptr<CLogDataInf> &repDataInf = repCalcInf->m_dataInf;
 	repDataInf->putInf(oper);
 	repDataInf->putInf(sessionId);//session id(´óÓÚ0)
@@ -290,7 +290,7 @@ bool CVerifyClient::verifyAccess(char *access, int accessLen, char *accessRep)
 }
 
 
-bool CVerifyClient::getClientInf(CClientInf *clientInf)
+bool CVerifyClient::getClientInf(IClientInf *clientInf)
 {	trace_worker();
 	char sessionId[16];
 	base::snprintf(sessionId, sizeof(sessionId), "%d", CNetClient::instance()->getSessionId());
